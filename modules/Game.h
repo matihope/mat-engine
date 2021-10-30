@@ -40,6 +40,8 @@ class Game {
         const float getPhysicsUpdateCallFreq() const;
 
         // Variables
+        int current_screen;
+        int initialized_screens;
 
         // Functions
         void pollEvents();
@@ -54,9 +56,10 @@ class Game {
         void setFPS(uint fpsCount);
         void setPrintCurrentFPS(bool on = true);
         void setPhysicsUpdateCallFreq(float newFreq = 60.f);
-        void addGameObject(GameObject& obj);
-        void addDrawable(Drawable& drawable);
-        void addUpdatable(Updatable& updatable);
+        void addGameObject(GameObject& obj, int screen = 0);
+        void addDrawable(Drawable& drawable, int screen = 0);
+        void addUpdatable(Updatable& updatable, int screen = 0);
+        void validateScreen(int screen);
 
     private:
         // Variables
@@ -77,9 +80,10 @@ class Game {
         sf::Vector2f mousePosView;
 
         // Game objects
-        std::vector<GameObject *> gameObjects;
-        std::vector<Drawable *> drawables;
-        std::vector<Updatable *> updatables;
+        // vectors of vectors to create screens
+        std::vector<std::vector<GameObject *>> gameObjects;
+        std::vector<std::vector<Drawable *>> drawables;
+        std::vector<std::vector<Updatable *>> updatables;
 
         // Update related
         sf::Clock clock;

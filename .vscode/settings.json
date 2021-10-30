@@ -2,7 +2,9 @@
     "files.associations": {
         "**/*.html": "html",
         "**/templates/**/*.html": "django-html",
+        "**/templates/**/*": "django-txt",
         "**/requirements{/**,*}.{txt,in}": "pip-requirements",
+        "*.html": "django-html",
         "*.tcc": "cpp",
         "iostream": "cpp",
         "array": "cpp",
@@ -69,6 +71,12 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "any": "cpp",
+        "bitset": "cpp",
+        "complex": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "cfenv": "cpp"
     }
 }

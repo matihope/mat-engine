@@ -35,6 +35,8 @@ void Game::initVariables() {
     this->printCurrentFPS = false;
     this->setPhysicsUpdateCallFreq();
     this->viewport_mode = VIEWPORT_MODE::KEEP_AS_IS;
+    this->current_screen = 0;
+    this->initialized_screens = 0;
 }
 
 void Game::initWindow(int window_width, int window_height, std::string title) {
@@ -167,14 +169,14 @@ void Game::update() {
     this->printFPS(dt);
 
     // Update every updatable object
-    for (auto updt : this->updatables) {
+    for (auto updt : this->updatables[this->current_screen]) {
         updt->update(dt);
     }
 
     // Update every updatable object's physics
     if (this->physicsUpdateCounter >= this->physicsUpdateCallFreq) {
         this->physicsUpdateCounter -= this->physicsUpdateCallFreq;
-        for (auto updt : this->updatables) {
+        for (auto updt : this->updatables[this->current_screen]) {
             updt->updatePhysics(this->physicsUpdateCallFreq);
         }
     }
@@ -194,36 +196,50 @@ void Game::render() {
     this->window->clear(this->bgColor);
 
     // Draw game objects
-    for (Drawable* obj : this->drawables) {
+    for (Drawable* obj : this->drawables[this->current_screen]) {
         this->window->draw(*obj);
     }
 
     this->window->display();
 }
 
-void Game::addGameObject(GameObject& obj) {
+void Game::validateScreen(int screen){
+    /* 
+        Make sure, that our registers are big enough
+    */
+    while(screen >= this->initialized_screens){
+        gameObjects.push_back(std::vector<GameObject *>());
+        drawables.push_back(std::vector<Drawable *>());
+        updatables.push_back(std::vector<Updatable *>());
+        this->initialized_screens++;
+    }
+}
+
+void Game::addGameObject(GameObject& obj, int screen) {
     /*
         Adding an object to the game and adding self reference in the object
     */
-    this->gameObjects.push_back(&obj);
+
+    this->validateScreen(screen);
+    this->gameObjects[this->current_screen].push_back(&obj);
     obj.addGameParent(*this);
     obj.ready();
 }
 
-void Game::addDrawable(Drawable& drawable) {
+void Game::addDrawable(Drawable& drawable, int screen) {
     /*
         Adding a drawable and passing drawble to addGameObject
     */
     this->addGameObject(drawable);
-    this->drawables.push_back(&drawable);
+    this->drawables[this->current_screen].push_back(&drawable);
 }
 
-void Game::addUpdatable(Updatable& updatable) {
+void Game::addUpdatable(Updatable& updatable, int screen) {
     /*
         Adding a updatable and passing updatable to addDrawable
     */
     this->addDrawable(updatable);
-    this->updatables.push_back(&updatable);
+    this->updatables[this->current_screen].push_back(&updatable);
 }
 
 void Game::setViewportMode(VIEWPORT_MODE mode) {

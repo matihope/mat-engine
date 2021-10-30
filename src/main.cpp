@@ -2,7 +2,7 @@
 #include "JumpingGame/Player.h"
 
 // Init game engine
-JGame game(1600, 1200);
+JGame game(1000, 1000);
 Player p;
 
 void init(){
